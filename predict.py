@@ -38,9 +38,10 @@ def _main_():
     ]
     image_paths = [os.path.join(root_dir, p) for p in image_paths]
 
-    show_debug_frame = False
+    show_debug_frame = True
     save_output_video = False
-    num_frames_to_save = None  # set to None in order to run all frames in each video
+    write_raw_results_json = False
+    num_frames_to_save = 30  # set to None in order to run all frames in each video
     conf_threshold = 0.20
 
     with open(config_path) as config_buffer:
@@ -110,9 +111,10 @@ def _main_():
                     frame_scores.append(float(box.get_score()))
                 detection_dict[frame_i] = {"boxes": frame_boxes, "labels": frame_labels, "scores": frame_scores}
 
-            out_json_file = image_path.replace(".avi", ".json")
-            with open(out_json_file, "w") as jf:
-                json.dump(detection_dict, jf)
+            if write_raw_results_json:
+                out_json_file = image_path.replace(".avi", ".json")
+                with open(out_json_file, "w") as jf:
+                    json.dump(detection_dict, jf)
 
             if show_debug_frame:
                 cv2.destroyAllWindows()
